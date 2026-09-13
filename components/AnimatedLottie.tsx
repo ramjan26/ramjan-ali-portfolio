@@ -1,59 +1,71 @@
 "use client";
 
-import dynamic from "next/dynamic";
+import Lottie, { type LottieRefCurrentProps } from "lottie-react";
 import { useEffect, useRef, useState } from "react";
 
-const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
-
-type AnimationKey = "landingPerson" | "codingPerson" | "build";
-
 type Props = {
-  source: AnimationKey;
+  animationData: object;
   className?: string;
   priority?: boolean;
 };
 
-const animationImports: Record<AnimationKey, () => Promise<{ default: object }>> = {
-  landingPerson: () => import("../lib/animations/landingPerson.json"),
-  codingPerson: () => import("../lib/animations/codingPerson.json"),
-  build: () => import("../lib/animations/build.json"),
-};
-
-export default function AnimatedLottie({ source, className, priority = false }: Props) {
+export default function AnimatedLottie({
+  animationData,
+  className,
+  priority = false,
+}: Props) {
   const hostRef = useRef<HTMLDivElement>(null);
-  const [active, setActive] = useState(priority);
-  const [animationData, setAnimationData] = useState<object | null>(null);
+  const lottieRef = useRef<LottieRefCurrentProps>(null);
+  const [ready, setReady] = useState(priority);
 
   useEffect(() => {
-    if (active || !hostRef.current) return;
+    if (priority || ready || !hostRef.current) return;
+
+    const node = hostRef.current;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setActive(true);
+          setReady(true);
           observer.disconnect();
         }
       },
-      { rootMargin: "240px 0px" },
+      {
+        rootMargin: "220px 0px",
+        threshold: 0.01,
+      }
     );
-    observer.observe(hostRef.current);
+
+    observer.observe(node);
+
     return () => observer.disconnect();
-  }, [active]);
+  }, [priority, ready]);
 
   useEffect(() => {
-    if (!active || animationData) return;
-    let cancelled = false;
-    animationImports[source]().then((module) => {
-      if (!cancelled) setAnimationData(module.default);
+    if (!ready) return;
+
+    // Explicitly start the animation after the Lottie instance is mounted.
+    const frame = requestAnimationFrame(() => {
+      lottieRef.current?.goToAndPlay(0, true);
     });
-    return () => {
-      cancelled = true;
-    };
-  }, [active, animationData, source]);
+
+    return () => cancelAnimationFrame(frame);
+  }, [ready, animationData]);
 
   return (
-    <div ref={hostRef} className="animated-lottie-host" aria-hidden="true">
-      {active && animationData ? (
-        <Lottie animationData={animationData} loop={false} autoplay className={className} />
+    <div
+      ref={hostRef}
+      className="animated-lottie-host"
+      aria-hidden="true"
+    >
+      {ready ? (
+        <Lottie
+          lottieRef={lottieRef}
+          animationData={animationData}
+          loop={true}
+          autoplay={true}
+          className={className}
+        />
       ) : null}
     </div>
   );
