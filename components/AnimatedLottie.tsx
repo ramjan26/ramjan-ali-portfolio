@@ -1,56 +1,79 @@
 "use client";
 
-import Lottie, { type LottieRefCurrentProps } from "lottie-react";
+import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 
+const Lottie = dynamic(() => import("lottie-react"), {
+  ssr: false,
+});
+
+type AnimationKey = "landingPerson" | "codingPerson" | "build";
+
 type Props = {
-  animationData: object;
+  source: AnimationKey;
   className?: string;
   priority?: boolean;
 };
 
+const animationImports: Record<
+  AnimationKey,
+  () => Promise<{ default: object }>
+> = {
+  landingPerson: () => import("../lib/animations/landingPerson.json"),
+  codingPerson: () => import("../lib/animations/codingPerson.json"),
+  build: () => import("../lib/animations/build.json"),
+};
+
 export default function AnimatedLottie({
-  animationData,
+  source,
   className,
   priority = false,
 }: Props) {
   const hostRef = useRef<HTMLDivElement>(null);
-  const lottieRef = useRef<LottieRefCurrentProps>(null);
-  const [ready, setReady] = useState(priority);
+
+  const [active, setActive] = useState(priority);
+  const [animationData, setAnimationData] = useState<object | null>(null);
 
   useEffect(() => {
-    if (priority || ready || !hostRef.current) return;
-
-    const node = hostRef.current;
+    if (active || !hostRef.current) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setReady(true);
+          setActive(true);
           observer.disconnect();
         }
       },
       {
-        rootMargin: "220px 0px",
+        rootMargin: "240px 0px",
         threshold: 0.01,
       }
     );
 
-    observer.observe(node);
+    observer.observe(hostRef.current);
 
     return () => observer.disconnect();
-  }, [priority, ready]);
+  }, [active]);
 
   useEffect(() => {
-    if (!ready) return;
+    if (!active || animationData) return;
 
-    // Explicitly start the animation after the Lottie instance is mounted.
-    const frame = requestAnimationFrame(() => {
-      lottieRef.current?.goToAndPlay(0, true);
-    });
+    let cancelled = false;
 
-    return () => cancelAnimationFrame(frame);
-  }, [ready, animationData]);
+    animationImports[source]()
+      .then((module) => {
+        if (!cancelled) {
+          setAnimationData(module.default);
+        }
+      })
+      .catch((error) => {
+        console.error(`Failed to load Lottie animation: ${source}`, error);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [active, animationData, source]);
 
   return (
     <div
@@ -58,9 +81,8 @@ export default function AnimatedLottie({
       className="animated-lottie-host"
       aria-hidden="true"
     >
-      {ready ? (
+      {active && animationData ? (
         <Lottie
-          lottieRef={lottieRef}
           animationData={animationData}
           loop={true}
           autoplay={true}
