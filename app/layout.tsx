@@ -34,9 +34,7 @@ const themeInit = `
 (function () {
   try {
     var stored = localStorage.getItem("ramjan-theme");
-    var dark = stored
-      ? stored === "dark"
-      : window.matchMedia("(prefers-color-scheme: dark)").matches;
+var dark = stored === "dark";
 
     document.documentElement.dataset.theme = dark ? "dark" : "light";
   } catch (e) {}
