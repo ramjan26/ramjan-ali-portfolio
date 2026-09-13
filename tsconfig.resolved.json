@@ -1,0 +1,73 @@
+{
+    "compilerOptions": {
+        "target": "es2017",
+        "lib": [
+            "dom",
+            "dom.iterable",
+            "esnext"
+        ],
+        "allowJs": false,
+        "skipLibCheck": true,
+        "strict": true,
+        "noEmit": true,
+        "esModuleInterop": true,
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "jsx": "preserve",
+        "incremental": true,
+        "plugins": [
+            {
+                "name": "next"
+            }
+        ],
+        "allowSyntheticDefaultImports": true,
+        "resolvePackageJsonExports": true,
+        "resolvePackageJsonImports": true,
+        "preserveConstEnums": true,
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "strictBindCallApply": true,
+        "strictPropertyInitialization": true,
+        "strictBuiltinIteratorReturn": true,
+        "alwaysStrict": true,
+        "useUnknownInCatchVariables": true
+    },
+    "files": [
+        "./next-env.d.ts",
+        "./next.config.ts",
+        "./app/robots.ts",
+        "./app/sitemap.ts",
+        "./data/portfolio.ts",
+        "./app/icon.tsx",
+        "./app/layout.tsx",
+        "./app/not-found.tsx",
+        "./app/opengraph-image.tsx",
+        "./app/page.tsx",
+        "./app/providers.tsx",
+        "./components/ActiveNav.tsx",
+        "./components/AnimatedLottie.tsx",
+        "./components/CommandPalette.tsx",
+        "./components/ContactForm.tsx",
+        "./components/DesktopCursor.tsx",
+        "./components/LoadingScreen.tsx",
+        "./components/MobileNav.tsx",
+        "./components/ProjectExplorer.tsx",
+        "./components/Reveal.tsx",
+        "./components/ScrollProgress.tsx",
+        "./components/SmoothScroll.tsx",
+        "./components/ThemeToggle.tsx"
+    ],
+    "include": [
+        "next-env.d.ts",
+        ".next/types/**/*.ts",
+        "**/*.ts",
+        "**/*.tsx"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}

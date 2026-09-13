@@ -1,0 +1,3 @@
+export default function NotFound() {
+  return <main className="grid min-h-screen place-items-center bg-[var(--bg)] px-6 text-[var(--text)]"><div className="max-w-xl text-center"><div className="small-label">404 / Not found</div><h1 className="mt-4 font-serif text-6xl leading-none md:text-8xl">Wrong branch.</h1><p className="mt-6 text-sm leading-6 text-[var(--muted)]">The page you tried to reach does not exist in this build.</p><a href="/" className="focus-ring mt-8 inline-flex rounded-full bg-[var(--accent)] px-5 py-3 text-xs font-semibold uppercase tracking-[.12em] text-[var(--accent-ink)]">Return home</a></div></main>;
+}
