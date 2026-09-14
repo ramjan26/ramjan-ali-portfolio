@@ -9,20 +9,12 @@ export default function ThemeToggle() {
   useEffect(() => {
     const stored = window.localStorage.getItem("ramjan-theme");
 
-    const currentTheme =
-      stored === "dark" || stored === "light"
-        ? stored
-        : document.documentElement.dataset.theme ||
-          (window.matchMedia("(prefers-color-scheme: dark)").matches
-            ? "dark"
-            : "light");
-
-    const isDark = currentTheme === "dark";
+    // Light mode is the default.
+    const isDark = stored === "dark";
 
     setDark(isDark);
     setMounted(true);
 
-    // Keep the document theme in sync.
     document.documentElement.dataset.theme = isDark ? "dark" : "light";
   }, []);
 
@@ -30,7 +22,9 @@ export default function ThemeToggle() {
     const next = !dark;
 
     setDark(next);
+
     document.documentElement.dataset.theme = next ? "dark" : "light";
+
     window.localStorage.setItem(
       "ramjan-theme",
       next ? "dark" : "light"
