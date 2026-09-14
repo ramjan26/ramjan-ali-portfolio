@@ -509,7 +509,7 @@ body{overflow-x:hidden}
   .capability-illustration,.range-frameless-visual{max-width:520px;margin-inline:auto}
   .capability-content{max-width:760px;margin-inline:auto}
   .education-card{grid-template-columns:86px minmax(0,1fr);align-items:center}
-  .project-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .project-grid{grid-template-columns:repeat(2,minmax(0,1fr))} 
   .process-flow{grid-template-columns:repeat(2,minmax(0,1fr))}
   .contact-panel-old{grid-template-columns:1fr 1fr}
 }
